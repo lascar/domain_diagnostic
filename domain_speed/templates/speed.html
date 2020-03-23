@@ -21,7 +21,7 @@
           {% trans "resultados" %}
         </div>
         <div class="card-body p-3">
-          <table class="table table-responsive">
+          <table id="table-results" class="table table-responsive">
             <thead>
               <tr>
                 <th title="{% trans 'dominio' %}">
@@ -47,7 +47,7 @@
                   {{ status }}
                 </td>
                 <td class="text-truncate" title="{{ time }}">
-                  {{ time }}
+                  {{ time }} {% trans 'milisegundos' %}
                 </td>
                 <td class="text-truncate" title="{{ error }}">
                   {{ error }}

@@ -1,4 +1,5 @@
 import pdb
+import re
 import os, sys
 proj_path = "."
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "domain_diagnostics.settings")
@@ -41,7 +42,12 @@ class DomainSpeedTest(unittest.TestCase):
 
 
         inputbox.send_keys('google.com')
-        self.fail('Finish the test!')
+        self.browser.find_element_by_css_selector('input[type="submit"]').submit()
+        table = self.browser.find_element_by_id('table-results')
+        tds = table.find_elements_by_xpath('//td')
+        self.assertEqual('google.com', tds[0].text)
+        self.assertEqual('200', tds[1].text)
+        self.assertRegex(tds[2].text, "\d+ milisegundos")
 
 if __name__ == '__main__':
     unittest.main(warnings='ignore')
