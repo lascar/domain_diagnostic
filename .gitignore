@@ -1,0 +1,9 @@
+*org
+*~
+*swp
+Session.vim
+virtualenv
+*.pyc
+__pycache__
+db.sqlite3
+geckodriver.log

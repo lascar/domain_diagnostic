@@ -1,0 +1,14 @@
+{% load i18n %}
+<html>
+  {% load static %}
+  <head>
+			<link rel="stylesheet" href="{% static "css/bootstrap-4.0.0.min.css" %}">
+      <title>{% trans 'Herramientas de diagnostico para dominio' %}</title>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <h1 class="text-center">{% trans 'Herramientas de diagnostico para dominio' %}</h1>
+      {% block page_content %}{% endblock %}
+    </div>
+  </body>
+</html>

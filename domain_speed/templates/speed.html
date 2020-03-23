@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block page_content %}
+  <div class="row">
+    <div class="card col-5 m-3">
+      <div class="card-header text-center text-uppercase">
+        {% trans "medida de velocidad por dominio" %}
+      </div>
+      <div class="card-body p-3">
+        <form action="/" method="post">
+          {{ form }}
+          <input type="submit" value="{% trans 'que velocidad?' %}">
+        </form>
+      </div>
+    </div>
+    
+    {% if time != 0  or status or error %}
+      <div class="card col-5 m-3">
+        <div class="card-header text-center text-uppercase">
+          {% trans "resultados" %}
+        </div>
+        <div class="card-body p-3">
+          <table class="table table-responsive">
+            <thead>
+              <tr>
+                <th title="{% trans 'dominio' %}">
+                  {% trans "dominio" %}
+                </th>
+                <th title="{% trans 'statuto' %}">
+                  {% trans "statuto" %}
+                </th>
+                <th title="{% trans 'velocidad' %}">
+                  {% trans "velocidad" %}
+                </th>
+                <th title="{% trans 'error' %}">
+                  {% trans "error" %}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-truncate" title="{{ domain }}">
+                  {{ domain }}
+                </td>
+                <td class="text-truncate" title="{{ status }}">
+                  {{ status }}
+                </td>
+                <td class="text-truncate" title="{{ time }}">
+                  {{ time }}
+                </td>
+                <td class="text-truncate" title="{{ error }}">
+                  {{ error }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>   
+      </div>   
+    {% endif %}
+{% endblock %}
