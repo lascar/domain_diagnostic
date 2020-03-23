@@ -9,13 +9,14 @@
       </div>
       <div class="card-body p-3">
         <form action="/" method="post">
+          {% csrf_token %}
           {{ form }}
           <input type="submit" value="{% trans 'que velocidad?' %}">
         </form>
       </div>
     </div>
     
-    {% if time != 0  or status or error %}
+    {% if time != 0  or status %}
       <div class="card col-5 m-3">
         <div class="card-header text-center text-uppercase">
           {% trans "resultados" %}

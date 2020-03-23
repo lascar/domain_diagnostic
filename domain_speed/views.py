@@ -12,51 +12,39 @@ from django.http import JsonResponse
 from .forms import SpeedForm
 
 @csrf_exempt
-def speed(request):
+def speed_json(request):
+    data = make_response(request.body.decode("utf-8"))
+    return JsonResponse(data)
+
+def speed_html(request):
+    if request.method == 'POST':
+        form = SpeedForm(request.POST)
+
+        if form.is_valid():
+            form = SpeedForm()
+            body = request.body.decode("utf-8")
+            response = make_response(body)
+            response.update({'form': form})
+            # return render(request, 'speed.html', {dict({'form': form}.items() + make_response(request.body.decode("utf-8").items()))})
+            return render(request, 'speed.html', response)
+
+
+    form = SpeedForm()
+    return render(request, 'speed.html', {'form': form})
+
+def make_response(request_body):
     error = ''
     time = 0
     status = ''
     domain = ''
-    if request.method == 'POST':
-        form = SpeedForm(request.POST)
-        headers_accept = request.headers['Accept']
+    domain_regex = '.*domain=(\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3}$|[a-z0-9]+[a-z0-9-.]*\.+[a-z]{2,}$)'
+    match = re.findall(domain_regex, request_body)
+    if ( match ):
+        domain = match[0]
+        response = requests.get('http://' + domain)
+        time = response.elapsed.microseconds / 1000
+        status = response.status_code
+    else:
+        error = 'dominio mal formado'
 
-        # pdb.set_trace()
-        if headers_accept == 'application/json':
-            json_domain_regex = 'domain=(.*)'
-            match = re.match(json_domain_regex, request.body.decode("utf-8"))
-            json_request = True
-            domain = match.group(1)
-        else:
-            if form.is_valid():
-                json_request = False
-                domain = form['domain'].value()
-                form = SpeedForm()
-                # pdb.set_trace()
-            else:
-                form = SpeedForm()
-                return render(request, 'speed.html', {'form': form, 'domain': domain, 'time': time, 'error': error, 'status': status})
-
-        ip = re.compile('^\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3}$')
-        domain_name = re.compile('^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}$')
-
-        if domain_name.match(domain) or ip.match(domain):
-            response = requests.get('http://' + domain)
-            time = response.elapsed.microseconds / 1000
-            status = response.status_code
-        else:
-            error = 'dominio mal formado'
-        
-        if json_request:
-            data = {
-                'domain': domain,
-                'time': time,
-                'error': error,
-                'status': status,
-            }
-            return JsonResponse(data)
-        else:
-            return render(request, 'speed.html', {'form': form, 'domain': domain, 'time': time, 'error': error, 'status': status})
-
-    form = SpeedForm()
-    return render(request, 'speed.html', {'form': form, 'domain': domain, 'time': time, 'error': error, 'status': status})
+    return {'domain': domain, 'status': status, 'time': time, 'error': error}
