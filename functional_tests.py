@@ -10,9 +10,10 @@ application = get_wsgi_application()
 from django.utils.translation import ugettext_lazy as _
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from selenium.common.exceptions import NoSuchElementException
 import time
 import unittest
-from domain_speed.views import speed 
+from domain_speed.views import speed_html 
 
 
 
@@ -35,12 +36,14 @@ class DomainSpeedTest(unittest.TestCase):
         self.assertIn('Herramientas de diagnostico para dominio', header_text)
 
         inputbox = self.browser.find_element_by_id('id_domain')
+        self.assertNotIn
         self.assertEqual(
             inputbox.get_attribute('placeholder'),
             'dominio o IP'
         )
 
-
+        with self.assertRaises(NoSuchElementException):
+            self.browser.find_element_by_xpath("//table")
         inputbox.send_keys('google.com')
         self.browser.find_element_by_css_selector('input[type="submit"]').submit()
         table = self.browser.find_element_by_id('table-results')
